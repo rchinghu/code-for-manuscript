@@ -1,32 +1,99 @@
-# code-for-manuscript
-"""
-Exploratory Interpretable Modeling Strategy
+# XGBoost Feature Importance Analysis
 
-This analysis was designed as an exploratory and interpretive modeling
-procedure rather than a conventional predictive modeling framework.
+This repository contains the Python code used for exploratory feature-importance analysis with XGBoost.
 
-The primary objective was not to develop a model with external predictive
-generalizability, but to characterize the relationships among variables
-within the current dataset and to quantify the relative contribution of
-each feature to the fitted model output.
+The code fits XGBoost regression models for two outcome variables:
 
-Accordingly, no training/test split was performed. All available samples
-were used to train the XGBoost regression model, allowing the model to
-fit the current dataset as fully as possible and to capture potential
-nonlinear associations and feature interactions.
+- BOP improvement
+- PD improvement
 
-Missing feature values were not imputed by mean, median, or other
-replacement strategies. Instead, original missing values were retained
-as NaN and handled natively by XGBoost, in order to avoid introducing
-additional assumptions through imputation.
+Feature importance is evaluated using XGBoost gain importance and SHAP-like contribution values calculated with `pred_contribs=True`.
 
-Feature contributions were estimated using XGBoost's native
-pred_contribs=True function, which provides SHAP-like contribution
-values for each feature. The mean absolute SHAP value was used as the
-primary metric for ranking feature importance.
+The mean absolute SHAP-like value is used as the main feature-importance metric.
 
-The resulting feature importance should therefore be interpreted as
-model-derived associations within the current dataset. These findings
-should not be interpreted as causal effects or as externally validated
-predictive factors.
-"""
+## Requirements
+
+The code was tested on Windows with Python 3.10.
+
+Required Python packages:
+
+```text
+pandas
+numpy
+xgboost
+shap
+matplotlib
+scikit-learn
+openpyxl
+```
+
+No special hardware is required.
+
+## Installation
+
+Install the required packages with:
+
+```bash
+pip install pandas numpy xgboost shap matplotlib scikit-learn openpyxl
+```
+
+Typical installation time is less than 5 minutes on a standard desktop computer.
+
+## Input data
+
+No demo dataset is included.
+
+To run the code, provide an Excel file containing the following columns:
+
+```text
+Serum IgG
+Serum IgA
+Salivary IgG
+Salivary sIgA
+Pg菌百分比16s
+BOP improvement
+PD improvement
+```
+
+In the code, `Pg菌百分比16s` is renamed as `Pg percentage 16S` for output display.
+
+## How to run
+
+Update the data path in the script:
+
+```python
+df = pd.read_excel(r"C:\Users\jp5\Desktop\data")
+```
+
+For example, change it to:
+
+```python
+df = pd.read_excel("data.xlsx")
+```
+
+Then run:
+
+```bash
+python xgboost_feature_importance.py
+```
+
+## Output
+
+For each outcome variable, the script prints:
+
+- in-sample R2, RMSE, and MAE
+- XGBoost gain importance
+- SHAP-like feature importance
+- overall feature-importance ranking
+
+The script also generates feature-importance bar plots and SHAP summary plots.
+
+Expected run time for a small tabular dataset is usually less than 1 minute.
+
+## Notes
+
+This analysis is exploratory. It is intended to evaluate feature contributions within the current dataset, not to build an externally validated predictive model.
+
+No training/test split is used. Missing feature values are kept as `NaN` and handled directly by XGBoost.
+
+The results should be interpreted as model-derived associations, not as causal effects.
